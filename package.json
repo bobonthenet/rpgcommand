@@ -1,0 +1,13 @@
+{
+  "name": "rpgcommand",
+  "version": "0.0.1",
+  "description": "Command line tool for quickly doing stuff for table top RPGs.\nCurrently this only allows you to create a new character.",
+  "main": "rpgcommand.js",
+  "author": "BobbyB",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.12.2",
+    "inquirer": "^4.0.1",
+    "tec-table": "^1.0.1"
+  }
+}
