@@ -10,3 +10,9 @@ node rpgcommand c
 
 # TODO
 Pretty much everything needs to be done at this point. Next up is properly calculating skill ranks based on the chosen allocation and class skills. Then I'll work on adding feats.
+
+# Notes
+* http://www.d20pfsrd.com/basics-ability-scores/character-creation/
+* https://www.npmjs.com/package/tec-table
+* https://scotch.io/tutorials/build-an-interactive-command-line-application-with-nodejs
+* https://github.com/SBoudrias/Inquirer.js#examples
