@@ -2,6 +2,7 @@ const assert = require('assert');
 const { prompt } = require('inquirer');
 const Table = require('tec-table');
 const { roll } = require('./helper');
+const { skillSummary } = require('./tables');
 
 var character = {};
 
@@ -398,6 +399,9 @@ function allocateSkillRanks() {
     character.skillRanks = []
     answers.skills.forEach(function(skill) {
       character.skillRanks[skill] = 1;
+      if(skillSummary[skill][character.class] === "C") {
+        character.skillRanks[skill] += 3;
+      }
     });
 
     console.info('You have chosen to put ranks in the following skills:\n' + character.skillRanks);
