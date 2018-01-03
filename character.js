@@ -1,8 +1,9 @@
 const assert = require('assert');
-const { prompt } = require('inquirer');
+const { prompt, Separator } = require('inquirer');
 const Table = require('tec-table');
 const { roll } = require('./helper');
 const { skillSummary } = require('./tables');
+const { feats } = require('./feats');
 
 var character = {};
 
@@ -11,13 +12,34 @@ const racePrompt = {
   name: 'raceChoice',
   message: 'Choose your race',
   choices: [
-    'Dwarf +2 Con, +2 Wis, –2 Cha',
-    'Elf +2 Dex, +2 Int, –2 Con',
-    'Gnome +2 Con, +2 Cha, –2 Str',
-    'Half Elf +2 to one ability score (your choice)',
-    'Halfling +2 Dex, +2 Cha, –2 Str',
-    'Half Orc +2 to one ability score (your choice)',
-    'Human +2 to one ability score (your choice)'//,
+    {
+      name: 'Dwarf +2 Con, +2 Wis, –2 Cha',
+      value: 'Dwarf'
+    },
+    {
+      name: 'Elf +2 Dex, +2 Int, –2 Con',
+      value: 'Elf'
+    },
+    {
+      name: 'Gnome +2 Con, +2 Cha, –2 Str',
+      value: 'Gnome'
+    },
+    {
+      name: 'Half Elf +2 to one ability score (your choice)',
+      value: 'Half Elf'
+    },
+    {
+      name: 'Halfling +2 Dex, +2 Cha, –2 Str',
+      value: 'Halfling'
+    },
+    {
+      name: 'Half Orc +2 to one ability score (your choice)',
+      value: 'Half Orc'
+    },
+    {
+      name: 'Human +2 to one ability score (your choice)',
+      value: 'Human'
+    }//,
     //'Random'
   ]
 }
@@ -41,6 +63,69 @@ const classPrompt = {
   name: 'classChoice',
   message: 'Choose your character class.',
   choices: ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Ranger", "Rogue", "Sorcerer", "Wizard"]
+}
+
+function featChoices() {
+  let preVal = '';
+  let choiceArray = [];
+  feats.sort(function(a,b) {
+    if (a.name < b.name)
+      return -1;
+    if (a.name > b.name)
+      return 1;
+    return 0;
+  });
+
+  feats.forEach(function(feat){
+    var metPre = true;
+    if(feat.prerequisites.length === 0) {
+      choiceArray.push({ name: `${feat.name} - ${feat.benefit}`.substring(0,80), value: feat.name });
+    }
+    else
+    {
+      feat.prerequisites.forEach(function(prereq){
+        if(prereq.substring(0,3) === 'Str') {
+          if(parseInt(prereq.substring(4)) > character.str) {
+            metPre = false;
+          }
+        }
+        if(prereq.substring(0,3) === 'Dex') {
+          if(parseInt(prereq.substring(4)) > character.dex) {
+            metPre = false;
+          }
+        }
+        if(prereq.substring(0,3) === 'Con') {
+          if(parseInt(prereq.substring(4)) > character.con) {
+            metPre = false;
+          }
+        }
+        if(prereq.substring(0,3) === 'Int') {
+          if(parseInt(prereq.substring(4)) > character.int) {
+            metPre = false;
+          }
+        }
+        if(prereq.substring(0,3) === 'Wis') {
+          if(parseInt(prereq.substring(4)) > character.wis) {
+            metPre = false;
+          }
+        }
+        if(prereq.substring(0,3) === 'Cha') {
+          if(parseInt(prereq.substring(4)) > character.cha) {
+            metPre = false;
+          }
+        }
+      });
+      if(feat.prerequisitesFeats.length > 0) { //TODO: This is way too simplified.
+        metPre = false;
+      }
+      if(metPre === true) {
+        choiceArray.push({ name: `${feat.name} - ${feat.benefit}`.substring(0,80), value: feat.name });
+      }
+    }
+
+
+  });
+  return choiceArray;
 }
 
 function startCreate() {
@@ -129,39 +214,39 @@ function chooseRace() {
   console.info("Next you choose your race.")
   prompt(racePrompt).then(answers => {
     switch(answers.raceChoice) {
-      case 'Dwarf +2 Con, +2 Wis, –2 Cha':
+      case 'Dwarf':
         character.race = 'Dwarf';
         character.con += 2;
         character.wis += 2;
         character.cha -= 2;
         break;
-      case 'Elf +2 Dex, +2 Int, –2 Con':
+      case 'Elf':
         character.race = 'Elf';
         character.dex += 2;
         character.int += 2;
         character.con -= 2;
         break;
-      case 'Gnome +2 Con, +2 Cha, –2 Str':
+      case 'Gnome':
         character.race = 'Gnome';
         character.con += 2;
         character.cha += 2;
         character.str -= 2;
         break;
-      case 'Half Elf +2 to one ability score (your choice)':
+      case 'Half Elf':
         character.race = 'Half Elf';
         chooseRaceAbilityBonus();
         break;
-      case 'Halfling +2 Dex, +2 Cha, –2 Str':
+      case 'Halfling':
         character.race = 'Halfling'
         character.dex += 2;
         character.cha += 2;
         character.str -= 2;
         break;
-      case 'Half Orc +2 to one ability score (your choice)':
+      case 'Half Orc':
         character.race = 'Half Orc';
         chooseRaceAbilityBonus();
         break;
-      case 'Human +2 to one ability score (your choice)':
+      case 'Human':
         character.race = 'human';
         chooseRaceAbilityBonus();
         break;
@@ -396,7 +481,7 @@ function allocateSkillRanks() {
     }
   ])
   .then(answers => {
-    character.skillRanks = []
+    character.skillRanks = [];
     answers.skills.forEach(function(skill) {
       character.skillRanks[skill] = 1;
       if(skillSummary[skill][character.class] === "C") {
@@ -405,10 +490,25 @@ function allocateSkillRanks() {
     });
 
     console.info('You have chosen to put ranks in the following skills:\n' + character.skillRanks);
-    console.info(character);
+    chooseFeats();
   });
+}
 
-
+function chooseFeats() {
+  prompt([
+    {
+      type: 'checkbox',
+      message: `Choose 1 feats to put ranks in.`,
+      name: 'feats',
+      choices: featChoices()
+    }
+  ])
+  .then(answers => {
+    character.feats = [];
+    answers.feats.forEach(function(feat) {
+      character.feats += feat;
+    })
+  });
 }
 
 const doNothing = (myVar) => {
