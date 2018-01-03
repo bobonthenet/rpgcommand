@@ -247,7 +247,7 @@ function chooseRace() {
         chooseRaceAbilityBonus();
         break;
       case 'Human':
-        character.race = 'human';
+        character.race = 'Human';
         chooseRaceAbilityBonus();
         break;
     }
@@ -351,7 +351,7 @@ function numSkillRanks() {
     ranksPerLevel += 5;
   }
 
-  if(character.race === 'human') {
+  if(character.race === 'Human') {
     ranksPerLevel ++;
   }
 
@@ -495,20 +495,175 @@ function allocateSkillRanks() {
 }
 
 function chooseFeats() {
+  var numFeats = 1;
+  if(character.race === "Human") {
+    numFeats++;
+  }
+  if(character.class === "Fighter") {
+    numFeats++;
+  }
+
   prompt([
     {
       type: 'checkbox',
-      message: `Choose 1 feats to put ranks in.`,
+      message: `Choose ${numFeats} feats.`,
       name: 'feats',
-      choices: featChoices()
+      choices: featChoices(),
+      validate: function(answer) {
+        if(answer.length !== numFeats) {
+          return `You must choose ${numFeats} feats. Try Again.`
+        }
+        return true;
+      }
     }
   ])
   .then(answers => {
     character.feats = [];
     answers.feats.forEach(function(feat) {
-      character.feats += feat;
+      character.feats.push(feat);
     })
+
+    calcHP();
+    startingWealth()
+    console.info("Here is your character so far.")
+    console.info(character)
   });
+}
+
+function calcHP() { //TODO: Combine this with skill ranks.
+  switch(character.class) {
+    case 'Alchemist':
+      character.hp = 8;
+      break;
+    case 'Barbarian':
+      character.hp = 12;
+      break;
+    case 'Bard':
+      character.hp = 8;
+      break;
+    case 'Cavalier':
+      character.hp = 10;
+      break;
+    case 'Cleric':
+      character.hp = 8;
+      break;
+    case 'Druid':
+      character.hp = 8;
+      break;
+    case 'Fighter':
+      character.hp = 10;
+      break;
+    case 'Gunslinger':
+      character.hp = 10;
+      break;
+    case 'Inquisitor':
+      character.hp = 8;
+      break;
+    case 'Magus':
+      character.hp = 8;
+      break;
+    case 'Monk':
+      character.hp = 8;
+      break;
+    case 'Ninja':
+      character.hp = 8;
+      break;
+    case 'Oracle':
+      character.hp = 8;
+      break;
+    case 'Paladin':
+      character.hp = 10;
+      break;
+    case 'Ranger':
+      character.hp = 10;
+      break;
+    case 'Rogue':
+      character.hp = 8;
+      break;
+    case 'Samurai':
+      character.hp = 10;
+      break;
+    case 'Sorcerer':
+      character.hp = 6;
+      break;
+    case 'Summoner':
+      character.hp = 8;
+      break;
+    case 'Witch':
+      character.hp = 6;
+      break;
+    case 'Wizard':
+      character.hp = 6;
+      break;
+  }
+}
+
+function startingWealth() { //TODO: Probably also want to combine this.
+  switch(character.class) {
+    case 'Alchemist':
+      character.gold = roll(3,6) * 10;
+      break;
+    case 'Barbarian':
+      character.gold = roll(3,6) * 10;
+      break;
+    case 'Bard':
+      character.gold = roll(3,6) * 10;
+      break;
+    case 'Cavalier':
+      character.gold = roll(5,6) * 10;
+      break;
+    case 'Cleric':
+      character.gold = roll(4,6) * 10;
+      break;
+    case 'Druid':
+      character.gold = roll(2,6) * 10;
+      break;
+    case 'Fighter':
+      character.gold = roll(5,6) * 10;
+      break;
+    case 'Gunslinger':
+      character.gold = roll(5,6) * 10;
+      break;
+    case 'Inquisitor':
+      character.gold = roll(4,6) * 10;
+      break;
+    case 'Magus':
+      character.gold = roll(4,6) * 10;
+      break;
+    case 'Monk':
+      character.gold = roll(1,6) * 10;
+      break;
+    case 'Ninja':
+      character.gold = roll(4,6) * 10;
+      break;
+    case 'Oracle':
+      character.gold = roll(3,6) * 10;
+      break;
+    case 'Paladin':
+      character.gold = roll(5,6) * 10;
+      break;
+    case 'Ranger':
+      character.gold = roll(5,6) * 10;
+      break;
+    case 'Rogue':
+      character.gold = roll(4,6) * 10;
+      break;
+    case 'Samurai':
+      character.gold = roll(3,6) * 10;
+      break;
+    case 'Sorcerer':
+      character.gold = roll(2,6) * 10;
+      break;
+    case 'Summoner':
+      character.gold = roll(2,6) * 10;
+      break;
+    case 'Witch':
+      character.gold = roll(3,6) * 10;
+      break;
+    case 'Wizard':
+      character.gold = roll(2,6) * 10;
+      break;
+  }
 }
 
 const doNothing = (myVar) => {
