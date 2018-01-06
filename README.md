@@ -8,8 +8,19 @@ The following will run the character generation script. It isn't finish but righ
 node rpgcommand c
 ```
 
-# TODO
-Pretty much everything needs to be done at this point. Next up is properly calculating skill ranks based on the chosen allocation and class skills. Then I'll work on adding feats.
+# Character Generation TODO
+* I think I'd like to refactor a few things before I move on from here. I think this already handles all the hard stuff.
+* Determine Saving Throws, Initiative, and Attack Values.
+* Description and personality, include options to automatically generate this stuff.
+* Spells
+* Continue to improve feat selection. I don't like how it is.
+  * Idea: Only choose one feat at a time and loop for each feat your allowed to take. Then it can do a better job of getting feats with prerequisites.
+
+# General TODO
+* Finish character generation.
+* Randomly generate stuff with Markov algo.
+* Encounter generator.
+
 
 # Notes
 * http://www.d20pfsrd.com/basics-ability-scores/character-creation/
